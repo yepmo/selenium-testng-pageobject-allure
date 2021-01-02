@@ -1,0 +1,8 @@
+{
+    "hub": "http://localhost:4444/wd/hub/",
+
+    "headless": false,
+    "insecure_certificate": false,
+    "no_sandbox": false,
+    "incognito": false
+}
