@@ -10,7 +10,6 @@
   <name>selenium-testng-pageobject-allure</name>
   <url>https://github.com/ParthibanRajasekaran/selenium-testng-pageobject-allure</url>
 
-
   <properties>
     <aspectj.version>1.8.10</aspectj.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -240,6 +239,5 @@
       </plugin>
     </plugins>
   </reporting>
-
 
 </project>
