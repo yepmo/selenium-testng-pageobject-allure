@@ -27,6 +27,9 @@ jobs:
     - name: Build with Maven
       run: mvn -B clean test site -DsuiteFile=web_regression.xml --file pom.xml -DremoteExecution=true
       
+    - name: Allure report generation
+      run: mvn allure:report
+      
     - name: Cleanup selenium Grid
       run: docker-compose down
       
