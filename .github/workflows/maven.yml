@@ -20,10 +20,13 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+        
     - name: Setup selenium Grid
       run: docker-compose up -d
+      
     - name: Build with Maven
       run: mvn -B clean test site -DsuiteFile=web_regression.xml --file pom.xml -DremoteExecution=true
+      
     - name: Cleanup selenium Grid
       run: docker-compose down
       
