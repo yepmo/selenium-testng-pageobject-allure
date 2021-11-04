@@ -1,15 +1,15 @@
 package com.template.project.web.utils;
 
+import io.qameta.allure.Step;
+import io.qameta.allure.testng.AllureTestNg;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import ru.yandex.qatools.allure.annotations.Step;
-import ru.yandex.qatools.allure.testng.AllureTestListener;
 
 import static com.template.project.common.Logger.*;
 
 @Slf4j
-public class SeleniumListener extends AllureTestListener {
+public class SeleniumListener extends AllureTestNg {
 
   @Override
   public void onStart(ITestContext arg0) {

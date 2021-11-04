@@ -1,5 +1,7 @@
 package com.template.project.common;
 
+import lombok.SneakyThrows;
+
 import javax.naming.ConfigurationException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -47,7 +49,8 @@ public class Constants {
      *
      * @return The location of the config folder.
      */
-    public static String getConfigPath() throws ConfigurationException {
+    @SneakyThrows
+    public static String getConfigPath() {
         try {
             return URLDecoder.decode(CONFIG_FILE_DIRECTORY, String.valueOf(StandardCharsets.UTF_8));
         } catch (final UnsupportedEncodingException e) {

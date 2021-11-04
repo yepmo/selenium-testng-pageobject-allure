@@ -1,5 +1,6 @@
 package com.template.project.web.utils;
 
+import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.openqa.selenium.*;
@@ -8,7 +9,6 @@ import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import ru.yandex.qatools.allure.annotations.Step;
 
 import java.io.File;
 import java.util.ArrayList;

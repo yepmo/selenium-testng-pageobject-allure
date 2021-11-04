@@ -1,5 +1,6 @@
 package com.template.project.web.utils;
 
+import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -9,7 +10,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import ru.yandex.qatools.allure.annotations.Step;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -117,7 +117,7 @@ public class Waiters {
    */
   public static void waitUntilElementGoesStale(String locator, int timeout) {
     final WebElement webElement = tryFindElement(locator);
-    WebDriverWait wait = new WebDriverWait(getDriver(), timeout);
+    WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(timeout));
     try {
       wait.pollingEvery(Duration.ofSeconds(5)).until(ExpectedConditions.stalenessOf(webElement));
       logInfo(String.format("Webelement %s reloaded successfully", locator));

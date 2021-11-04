@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 
 import java.net.MalformedURLException;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 import static com.template.project.common.Logger.logInfo;
 import static com.template.project.web.utils.BrowserFactory.getBrowser;
@@ -21,7 +21,7 @@ public class WebDriverHolder {
     } catch (MalformedURLException e) {
       log.error("Unable to open {}", browserName, e);
     }
-    getDriver().manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+    getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
   }
 
   public static WebDriver getDriver() {

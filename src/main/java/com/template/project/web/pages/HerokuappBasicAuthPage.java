@@ -15,7 +15,7 @@ import static com.template.project.web.utils.Waiters.waitUntilElementVisible;
 
 public class HerokuappBasicAuthPage extends HerukuappBasicAuthPageLocator {
 
-  public String generateEncodedURL() throws GeneralSecurityException, ConfigurationException {
+  public String generateEncodedURL() {
 
     return ConfigFileReaderUtils.getValueFromEnvironmentFile("protocol")
         + ":"

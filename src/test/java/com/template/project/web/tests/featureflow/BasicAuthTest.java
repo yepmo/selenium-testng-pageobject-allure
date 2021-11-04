@@ -3,18 +3,15 @@ package com.template.project.web.tests.featureflow;
 import com.template.project.web.pages.HerokuappBasicAuthPage;
 import com.template.project.web.tests.common.BaseTest;
 import com.template.project.web.utils.SeleniumUtils;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.yandex.qatools.allure.annotations.Features;
-import ru.yandex.qatools.allure.annotations.Stories;
-
-import javax.naming.ConfigurationException;
-import java.security.GeneralSecurityException;
 
 import static com.template.project.common.Groups.AUTH;
 
-@Features("Herokuapp")
-@Stories("Herokuapp Basic Authorization")
+@Feature("Herokuapp")
+@Story("Herokuapp Basic Authorization")
 public class BasicAuthTest extends BaseTest {
 
   private HerokuappBasicAuthPage herokuappBasicAuthPage;
@@ -22,9 +19,8 @@ public class BasicAuthTest extends BaseTest {
   private String url;
 
   @BeforeMethod(alwaysRun = true)
-  public void setup() throws GeneralSecurityException, ConfigurationException {
+  public void setup() {
     herokuappBasicAuthPage = new HerokuappBasicAuthPage();
-
     url = herokuappBasicAuthPage.generateEncodedURL();
   }
 

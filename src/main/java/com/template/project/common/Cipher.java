@@ -1,7 +1,8 @@
 package com.template.project.common;
 
+import io.qameta.allure.Step;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.qatools.allure.annotations.Step;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -65,7 +66,8 @@ public class Cipher {
    * @param cryptoText encrypted payload
    * @return decrypted sensitive {@link String}
    */
-  public static String decrypt(final String cryptoText) throws ConfigurationException {
+  @SneakyThrows
+  public static String decrypt(final String cryptoText) {
     SecretKeySpec secretKeySpec;
     try {
       secretKeySpec =

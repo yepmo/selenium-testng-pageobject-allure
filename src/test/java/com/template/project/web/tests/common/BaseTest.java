@@ -25,7 +25,7 @@ public class BaseTest extends RetryListener {
   }
 
   @AfterMethod(alwaysRun = true)
-  protected void tearDown(ITestResult testResult) {
+  protected static void tearDown(ITestResult testResult) {
     tearDownBrowser();
   }
 }

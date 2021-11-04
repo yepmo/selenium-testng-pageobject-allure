@@ -3,9 +3,9 @@ package com.template.project.common;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.qameta.allure.Step;
 import lombok.extern.log4j.Log4j2;
-import org.apache.tika.io.FilenameUtils;
-import ru.yandex.qatools.allure.annotations.Step;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.naming.ConfigurationException;
 import java.io.*;
@@ -20,7 +20,7 @@ import static com.template.project.common.Logger.logInfo;
 public class ConfigFileReaderUtils {
 
   @Step("Get value from Environment config file")
-  public static String getValueFromEnvironmentFile(String propName) throws ConfigurationException {
+  public static String getValueFromEnvironmentFile(String propName) {
 
     String environment = System.getProperty("envConfig");
     if (environment == null || environment.equals("")) environment = "default";

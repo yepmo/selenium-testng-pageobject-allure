@@ -40,16 +40,6 @@ public class BrowserFactory {
     } catch (ConfigurationException e) {
       e.printStackTrace();
     }
-    try {
-      STANDALONE_CHROME = readFromSeleniumConfigFile("standalone_node");
-    } catch (ConfigurationException e) {
-      e.printStackTrace();
-    }
-    try {
-      HUB_IE = readFromSeleniumConfigFile("hub_ie");
-    } catch (ConfigurationException e) {
-      e.printStackTrace();
-    }
 
     try {
       HEADLESS = Boolean.parseBoolean(readFromSeleniumConfigFile("headless"));
@@ -87,7 +77,7 @@ public class BrowserFactory {
    *
    * @param tokenSecret tokenSecret to be set in settings.xml and passed as parameter
    */
-  public static void handleWebDriverManagerAuthorizationIssue(String tokenSecret) throws ConfigurationException {
+  public static void handleWebDriverManagerAuthorizationIssue(String tokenSecret) {
     System.setProperty("wdm.gitHubTokenName", "test-automation");
     System.setProperty("wdm.gitHubTokenSecret", Cipher.decrypt(tokenSecret));
   }
