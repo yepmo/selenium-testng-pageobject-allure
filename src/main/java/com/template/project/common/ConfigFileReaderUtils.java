@@ -1,20 +1,24 @@
 package com.template.project.common;
 
+import static com.template.project.common.Logger.logInfo;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.qameta.allure.Step;
-import lombok.extern.log4j.Log4j2;
-import org.apache.commons.io.FilenameUtils;
-
-import javax.naming.ConfigurationException;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Properties;
-
-import static com.template.project.common.Logger.logInfo;
+import javax.naming.ConfigurationException;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.FilenameUtils;
 
 @Log4j2
 public class ConfigFileReaderUtils {
@@ -59,14 +63,15 @@ public class ConfigFileReaderUtils {
    * @return The value of the property, never null.
    */
   @Step("Get value from JSON config file")
-  public static String getValueFromJsonConfigFile(String fileName, String propName) throws ConfigurationException {
+  public static String getValueFromJsonConfigFile(String fileName, String propName)
+      throws ConfigurationException {
 
     final File configFile = configFile(fileName);
     final JsonObject jsonObject = parseConfig(configFile);
 
     if (null == jsonObject.get(propName)) {
       throw new ConfigurationException(
-              configFile.getAbsolutePath() + " does not contain the property " + propName);
+          configFile.getAbsolutePath() + " does not contain the property " + propName);
     }
     return jsonObject.get(propName).getAsString();
   }
@@ -83,9 +88,9 @@ public class ConfigFileReaderUtils {
       final JsonElement element = JsonParser.parseReader(new FileReader(configFile));
       if (element.isJsonNull()) {
         throw new ConfigurationException(
-                configFile.getAbsolutePath()
-                        + " could not be read (parsed as JsonNull), this normally means"
-                        + " that it is not valid json");
+            configFile.getAbsolutePath()
+                + " could not be read (parsed as JsonNull), this normally means"
+                + " that it is not valid json");
       }
       jsonObject = (JsonObject) element;
     } catch (FileNotFoundException | ConfigurationException e) {
@@ -93,21 +98,21 @@ public class ConfigFileReaderUtils {
     }
     if (null == jsonObject) {
       throw new ConfigurationException(
-              configFile.getAbsolutePath()
-                      + " could not be read , this normally means it is not valid json");
+          configFile.getAbsolutePath()
+              + " could not be read , this normally means it is not valid json");
     }
     return jsonObject;
   }
 
   private static File configFile(String fileName) throws ConfigurationException {
     final File configFile =
-            new File(Constants.getConfigPath() + File.separatorChar, FilenameUtils.getName(fileName));
+        new File(Constants.getConfigPath() + File.separatorChar, FilenameUtils.getName(fileName));
     log.debug("Config file: " + configFile);
     if (!configFile.canRead()) {
       throw new ConfigurationException(
-              configFile.getAbsolutePath()
-                      + " cannot be read. It probably either doesnt exist "
-                      + "or has incorrect file permissions");
+          configFile.getAbsolutePath()
+              + " cannot be read. It probably either doesnt exist "
+              + "or has incorrect file permissions");
     }
     return configFile;
   }

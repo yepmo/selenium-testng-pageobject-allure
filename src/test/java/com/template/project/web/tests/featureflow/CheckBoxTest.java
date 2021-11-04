@@ -1,15 +1,19 @@
 package com.template.project.web.tests.featureflow;
 
+import static com.template.project.common.Groups.INPUT_FIELD;
+import static com.template.project.web.utils.SeleniumUtils.openPage;
+
 import com.template.project.common.ConfigFileReaderUtils;
 import com.template.project.web.pages.HerokuappCheckboxPage;
 import com.template.project.web.pages.HerokuappLandingPage;
 import com.template.project.web.tests.common.BaseTest;
-import io.qameta.allure.*;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import static com.template.project.common.Groups.INPUT_FIELD;
-import static com.template.project.web.utils.SeleniumUtils.openPage;
 
 @Feature("Herokuapp")
 @Story("Herokuapp checkbox")

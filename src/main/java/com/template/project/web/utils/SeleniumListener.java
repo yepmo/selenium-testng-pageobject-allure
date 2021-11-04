@@ -1,12 +1,14 @@
 package com.template.project.web.utils;
 
+import static com.template.project.common.Logger.logInfo;
+import static com.template.project.common.Logger.saveScreenshotPNG;
+import static com.template.project.common.Logger.saveTextLog;
+
 import io.qameta.allure.Step;
 import io.qameta.allure.testng.AllureTestNg;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-
-import static com.template.project.common.Logger.*;
 
 @Slf4j
 public class SeleniumListener extends AllureTestNg {

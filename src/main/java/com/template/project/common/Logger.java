@@ -1,21 +1,20 @@
 package com.template.project.common;
 
+import static org.testng.Reporter.log;
+
 import com.sun.mail.iap.Response;
 import com.template.project.web.utils.WebDriverHolder;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
-import lombok.SneakyThrows;
-import org.apache.logging.log4j.LogManager;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Properties;
-
-import static org.testng.Reporter.log;
+import lombok.SneakyThrows;
+import org.apache.logging.log4j.LogManager;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 
 /** Adds content to allure reporting. */
 public class Logger {
@@ -143,7 +142,7 @@ public class Logger {
       try (FileWriter writer = new FileWriter(file)) {
         writer.write(jsonBody);
       }
-//      log.info(new ObjectMessage(new ReportPortalMessage(file, message)));
+      //      log.info(new ObjectMessage(new ReportPortalMessage(file, message)));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -187,11 +186,12 @@ public class Logger {
   @Attachment(value = "page screenshot", type = "image/png")
   public static byte[] saveScreenshotPNG() {
     Logger.log.debug("Taking screenshot");
-//    log.info(
-//            new ObjectMessage(
-//                    new ReportPortalMessage(
-//                            ((TakesScreenshot) WebDriverHolder.getDriver()).getScreenshotAs(OutputType.FILE),
-//                            "Appending Screenshot")));
+    //    log.info(
+    //            new ObjectMessage(
+    //                    new ReportPortalMessage(
+    //                            ((TakesScreenshot)
+    // WebDriverHolder.getDriver()).getScreenshotAs(OutputType.FILE),
+    //                            "Appending Screenshot")));
     return ((TakesScreenshot) WebDriverHolder.getDriver()).getScreenshotAs(OutputType.BYTES);
   }
 

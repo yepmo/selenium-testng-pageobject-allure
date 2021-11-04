@@ -1,6 +1,17 @@
 package com.template.project.web.utils;
 
+import static com.template.project.common.Constants.FLUENT_WAIT_POLLING_INTERVAL_MILLISECONDS;
+import static com.template.project.common.Constants.FLUENT_WAIT_TIMEOUT_SECONDS;
+import static com.template.project.common.Logger.logError;
+import static com.template.project.common.Logger.logInfo;
+import static com.template.project.web.utils.SeleniumUtils.tryFindElement;
+import static com.template.project.web.utils.WebDriverHolder.getDriver;
+import static org.awaitility.Awaitility.await;
+import static org.openqa.selenium.By.xpath;
+
 import io.qameta.allure.Step;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -10,18 +21,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-
-import static com.template.project.common.Constants.FLUENT_WAIT_POLLING_INTERVAL_MILLISECONDS;
-import static com.template.project.common.Constants.FLUENT_WAIT_TIMEOUT_SECONDS;
-import static com.template.project.common.Logger.logError;
-import static com.template.project.common.Logger.logInfo;
-import static com.template.project.web.utils.SeleniumUtils.tryFindElement;
-import static com.template.project.web.utils.WebDriverHolder.getDriver;
-import static org.awaitility.Awaitility.await;
-import static org.openqa.selenium.By.xpath;
 
 @Slf4j
 public class Waiters {
@@ -167,5 +166,4 @@ public class Waiters {
         .ignoreExceptions()
         .until(tryFindElement(locator)::isSelected);
   }
-
 }

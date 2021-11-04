@@ -1,28 +1,43 @@
 package com.template.project.web.utils;
 
+import static com.template.project.common.Logger.logError;
+import static com.template.project.common.Logger.logInfo;
+import static com.template.project.web.utils.Waiters.getFluentWait;
+import static com.template.project.web.utils.Waiters.waitUntilElementClickable;
+import static com.template.project.web.utils.Waiters.waitUntilValueWillBePresentInElement;
+import static com.template.project.web.utils.WebDriverHolder.getDriver;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.fail;
+
 import io.qameta.allure.Step;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.v95.network.Network;
+import org.openqa.selenium.devtools.v95.network.model.Headers;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
-
-import static com.template.project.common.Logger.logError;
-import static com.template.project.common.Logger.logInfo;
-import static com.template.project.web.utils.Waiters.*;
-import static com.template.project.web.utils.WebDriverHolder.getDriver;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.AssertJUnit.fail;
+import org.testng.Assert;
 
 /** Tools for testing web elements. */
 @Slf4j
@@ -818,5 +833,34 @@ public class SeleniumUtils {
   public static void doubleClick(String locator) {
     Actions actions = new Actions(getDriver());
     actions.doubleClick(tryFindElement(locator)).perform();
+  }
+
+  /** Handle basic auth via chrome dev tools */
+  public static void handleBasicAuthViaChromeDevTools(
+      final String username, final String password) {
+    final DevTools devTools;
+
+    if (getDriver() instanceof ChromeDriver) {
+      devTools = ((ChromeDriver) getDriver()).getDevTools();
+    } else if (getDriver() instanceof EdgeDriver) {
+      devTools = ((EdgeDriver) getDriver()).getDevTools();
+    } else { // Driver Not Supported
+      Assert.fail("Driver is not Supported!\nDriver Class is: " + getDriver().getClass().getName());
+      return;
+    }
+
+    devTools.createSession();
+
+    // Enable the Network domain of devtools
+    devTools.send(Network.enable(Optional.of(100000), Optional.of(100000), Optional.of(100000)));
+    final String auth = username + ":" + password;
+
+    // Encoding the username and password using Base64 (java.util)
+    final String encodeToString = Base64.getEncoder().encodeToString(auth.getBytes());
+
+    // Pass the network header -> Authorization : Basic <encoded String>
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("Authorization", "Basic " + encodeToString);
+    devTools.send(Network.setExtraHTTPHeaders(new Headers(headers)));
   }
 }

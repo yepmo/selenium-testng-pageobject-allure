@@ -1,15 +1,8 @@
 package com.template.project.common;
 
-import io.qameta.allure.Step;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static com.template.project.common.ConfigFileReaderUtils.getValueFromJsonConfigFile;
 
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
-import javax.naming.ConfigurationException;
+import io.qameta.allure.Step;
 import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
 import java.security.GeneralSecurityException;
@@ -17,8 +10,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
-
-import static com.template.project.common.ConfigFileReaderUtils.getValueFromJsonConfigFile;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.naming.ConfigurationException;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Cipher {
@@ -48,9 +47,10 @@ public class Cipher {
    * @throws GeneralSecurityException when {@link javax.crypto.Cipher} instance or {@link
    *     IvParameterSpec} could not be retrieved
    */
-  public static String encrypt(final String secret) throws ConfigurationException, GeneralSecurityException {
+  public static String encrypt(final String secret)
+      throws ConfigurationException, GeneralSecurityException {
     final SecretKeySpec secretKeySpec =
-            Cipher.createSecretKey(initialize("secret").toCharArray(), initialize("salt").getBytes());
+        Cipher.createSecretKey(initialize("secret").toCharArray(), initialize("salt").getBytes());
     final javax.crypto.Cipher ciph = getCipher();
     ciph.init(javax.crypto.Cipher.ENCRYPT_MODE, secretKeySpec);
     final AlgorithmParameters encParams = ciph.getParameters();
@@ -71,7 +71,7 @@ public class Cipher {
     SecretKeySpec secretKeySpec;
     try {
       secretKeySpec =
-              Cipher.createSecretKey(initialize("secret").toCharArray(), initialize("salt").getBytes());
+          Cipher.createSecretKey(initialize("secret").toCharArray(), initialize("salt").getBytes());
     } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
       throw new ConfigurationException(String.format("Unable to create secret key %s", e));
     }
@@ -79,16 +79,16 @@ public class Cipher {
     if (parts.length != 2) {
       log.warn("Unexpected number of parts in encoded text");
       throw new ConfigurationException(
-              "Unable to decrypt because format of encrypted text is incorrect");
+          "Unable to decrypt because format of encrypted text is incorrect");
     }
     final String iv = parts[0];
     final String secret = parts[1];
     try {
       final javax.crypto.Cipher ciph = getCipher();
       ciph.init(
-              javax.crypto.Cipher.DECRYPT_MODE,
-              secretKeySpec,
-              new IvParameterSpec(Cipher.decodeBase64(iv)));
+          javax.crypto.Cipher.DECRYPT_MODE,
+          secretKeySpec,
+          new IvParameterSpec(Cipher.decodeBase64(iv)));
       return new String(ciph.doFinal(Cipher.decodeBase64(secret)));
     } catch (GeneralSecurityException e) {
       throw new ConfigurationException(String.format("Unable to decrypt secret: %s", e));

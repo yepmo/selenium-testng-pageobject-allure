@@ -1,7 +1,13 @@
 package com.template.project.web.utils;
 
+import static com.template.project.common.ConfigFileReaderUtils.getValueFromJsonConfigFile;
+import static com.template.project.web.utils.WebDriverHolder.getDriver;
+
 import com.template.project.common.Cipher;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.naming.ConfigurationException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -15,13 +21,6 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import javax.naming.ConfigurationException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import static com.template.project.common.ConfigFileReaderUtils.getValueFromJsonConfigFile;
-import static com.template.project.web.utils.WebDriverHolder.getDriver;
 
 public class BrowserFactory {
 
@@ -47,7 +46,8 @@ public class BrowserFactory {
       e.printStackTrace();
     }
     try {
-      INSECURE_CERTIFICATE = Boolean.parseBoolean(readFromSeleniumConfigFile("insecure_certificate"));
+      INSECURE_CERTIFICATE =
+          Boolean.parseBoolean(readFromSeleniumConfigFile("insecure_certificate"));
     } catch (ConfigurationException e) {
       e.printStackTrace();
     }
@@ -223,6 +223,6 @@ public class BrowserFactory {
   }
 
   private static String readFromSeleniumConfigFile(String propName) throws ConfigurationException {
-      return getValueFromJsonConfigFile("selenium_config.json", propName);
+    return getValueFromJsonConfigFile("selenium_config.json", propName);
   }
 }

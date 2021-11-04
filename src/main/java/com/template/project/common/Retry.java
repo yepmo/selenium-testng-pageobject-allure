@@ -1,11 +1,11 @@
 package com.template.project.common;
 
+import static com.template.project.common.Constants.MAX_RETRY_COUNT;
+
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.ITestResult;
 import org.testng.util.RetryAnalyzerCount;
-
-import static com.template.project.common.Constants.MAX_RETRY_COUNT;
 
 /** Created by Parthiban. */
 @Slf4j
