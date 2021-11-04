@@ -12,6 +12,7 @@ import static org.testng.AssertJUnit.fail;
 
 import io.qameta.allure.Step;
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
@@ -20,12 +21,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
@@ -833,6 +837,13 @@ public class SeleniumUtils {
   public static void doubleClick(String locator) {
     Actions actions = new Actions(getDriver());
     actions.doubleClick(tryFindElement(locator)).perform();
+  }
+
+  public static void handleBasicAuthViaBiDiApi(
+      final String hostName, final String username, final String password) {
+    Predicate<URI> uriPredicate = uri -> uri.getHost().contains(hostName);
+    ((HasAuthentication) getDriver())
+        .register(uriPredicate, UsernameAndPassword.of(username, password));
   }
 
   /** Handle basic auth via chrome dev tools */

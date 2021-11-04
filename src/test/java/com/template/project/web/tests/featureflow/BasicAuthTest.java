@@ -2,10 +2,12 @@ package com.template.project.web.tests.featureflow;
 
 import static com.template.project.common.Cipher.decrypt;
 import static com.template.project.common.Groups.AUTH;
+import static com.template.project.common.Groups.NOT_FOR_REMOTE_EXECUTION;
+import static com.template.project.web.utils.SeleniumUtils.handleBasicAuthViaBiDiApi;
 
+import com.template.project.common.ConfigFileReaderUtils;
 import com.template.project.common.PropertyFileReaderUtils;
 import com.template.project.web.pages.HerokuappBasicAuthPage;
-import com.template.project.web.pages.HerokuappLandingPage;
 import com.template.project.web.tests.common.BaseTest;
 import com.template.project.web.utils.SeleniumUtils;
 import io.qameta.allure.Description;
@@ -19,12 +21,10 @@ import org.testng.annotations.Test;
 public class BasicAuthTest extends BaseTest {
 
   private HerokuappBasicAuthPage herokuappBasicAuthPage;
-  private HerokuappLandingPage herokuappLandingPage;
 
   @BeforeMethod(alwaysRun = true)
   public void setup() {
     herokuappBasicAuthPage = new HerokuappBasicAuthPage();
-    herokuappLandingPage = new HerokuappLandingPage();
   }
 
   @Test(groups = {AUTH})
@@ -38,11 +38,24 @@ public class BasicAuthTest extends BaseTest {
     herokuappBasicAuthPage.verifyIfPageFooterIsPresent();
   }
 
-  @Test(groups = {AUTH})
+  @Test(groups = {NOT_FOR_REMOTE_EXECUTION})
   @Description(
       "This is to validate the authorization via encoded URL using chrome dev tool protocol")
   public void navigateToEncodedUrlViaDevToolsProtocol() {
     SeleniumUtils.handleBasicAuthViaChromeDevTools(
+        PropertyFileReaderUtils.getValueFromTestDataFile("USERNAME"),
+        decrypt(PropertyFileReaderUtils.getValueFromTestDataFile("PASSWORD")));
+    SeleniumUtils.openPage(herokuappBasicAuthPage.generateURL());
+    herokuappBasicAuthPage.verifyIfPageHeaderIsDisplayed();
+    herokuappBasicAuthPage.verifyIfSuccessMessageIsDisplayed();
+    herokuappBasicAuthPage.verifyIfPageFooterIsPresent();
+  }
+
+  @Test(groups = {AUTH})
+  @Description("This is to validate the authorization via Bi-Directional protocol")
+  public void basicAuthUsingBiDiApi() {
+    handleBasicAuthViaBiDiApi(
+        ConfigFileReaderUtils.getValueFromEnvironmentFile("host_url"),
         PropertyFileReaderUtils.getValueFromTestDataFile("USERNAME"),
         decrypt(PropertyFileReaderUtils.getValueFromTestDataFile("PASSWORD")));
     SeleniumUtils.openPage(herokuappBasicAuthPage.generateURL());
