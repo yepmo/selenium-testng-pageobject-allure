@@ -1,48 +1,44 @@
-version: "2"
+version: '2'
 services:
-  selenium-hub:
-    image: selenium/hub
-    container_name: selenium-hub
-    ports:
-      - 4444:4444
-    environment:
-      - TZ=Europe/Amsterdam
-      - GRID_TIMEOUT=90
   chrome:
-    image: selenium/node-chrome-debug
-    ports:
-      - 5901-5950:5900
-    restart: always
+    image: selenium/node-chrome:4.0.0-20211102
+    shm_size: 2gb
     depends_on:
       - selenium-hub
     environment:
-      - HUB_PORT_4444_TCP_ADDR=selenium-hub
-      - HUB_PORT_4444_TCP_PORT=4444
-      - TZ=Europe/Amsterdam
-      - SCREEN_WIDTH=1600
-      - SCREEN_HEIGHT=900
-    volumes:
-      - /dev/shm:/dev/shm # significantly improves tab stability
-      - ./shared:/tmp/shared
-      - ./shared:/home/seluser/Downloads
-      - ./src/main/resources:/tmp/resources
-    privileged: true
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "6900:5900"
+
+  edge:
+    image: selenium/node-edge:4.0.0-20211102
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "6901:5900"
+
   firefox:
-    image: selenium/node-firefox-debug
-    ports:
-      - 5951-6000:5900
-    restart: always
+    image: selenium/node-firefox:4.0.0-20211102
+    shm_size: 2gb
     depends_on:
       - selenium-hub
     environment:
-      - HUB_PORT_4444_TCP_ADDR=selenium-hub
-      - HUB_PORT_4444_TCP_PORT=4444
-      - TZ=Europe/Amsterdam
-      - SCREEN_WIDTH=1600
-      - SCREEN_HEIGHT=900
-    volumes:
-      - /dev/shm:/dev/shm # significantly improves tab stability
-      - ./shared:/tmp/shared
-      - ./shared:/home/seluser/Downloads
-      - ./src/main/resources:/tmp/resources
-    privileged: true
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "6902:5900"
+
+  selenium-hub:
+    image: selenium/hub:4.0.0-20211102
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
