@@ -1,5 +1,5 @@
 {
-    "hub": "http://localhost:4444/wd/hub/",
+    "hub": "http://localhost:4444",
 
     "headless": false,
     "insecure_certificate": false,
