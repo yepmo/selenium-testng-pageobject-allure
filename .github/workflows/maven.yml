@@ -8,6 +8,8 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  schedule:
+    - cron: "30 2 * * *"
 
 jobs:
   build:
@@ -25,7 +27,7 @@ jobs:
       run: docker-compose up -d
       
     - name: Build with Maven
-      run: mvn -B clean test site -DsuiteFile=web_regression.xml -Dwdm.gitHubTokenName=${ WEBDRIVER_GITHUB_TOKEN_NAME } -Dwdm.gitHubTokenSecret=${ WEBDRIVER_GITHUB_TOKEN_SECRET } --file pom.xml -DremoteExecution=true
+      run: mvn -B clean test site -DsuiteFile=web_regression.xml -Dwdm.gitHubTokenName=${{ secrets.WEBDRIVER_GITHUB_TOKEN_NAME }} -Dwdm.gitHubTokenSecret=${{ secrets.WEBDRIVER_GITHUB_TOKEN_SECRET }} --file pom.xml -DremoteExecution=true
 #
 #    - name: Allure report generation
 #      run: mvn allure:report
