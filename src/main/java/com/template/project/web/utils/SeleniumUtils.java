@@ -844,50 +844,48 @@ public class SeleniumUtils {
     actions.doubleClick(tryFindElement(locator)).perform();
   }
 
-  public static void handleBasicAuthViaBiDiApi( final String username, final String password) {
-    DevTools devTools = ((HasDevTools) getDriver()).getDevTools();
-    devTools.createSession();
-    Augmenter augmenter = new Augmenter();
+  public static void handleBasicAuthViaBiDiApi( final String hostName, final String username, final String password) {
 
-    ((HasAuthentication) augmenter
-        .addDriverAugmentation("chrome",
-            HasAuthentication.class,
-            (caps, exec) -> (whenThisMatches, useTheseCredentials) ->
-                devTools.getDomains()
-                    .network()
-                    .addAuthHandler(whenThisMatches, useTheseCredentials))
-        .augment(getDriver())).register(UsernameAndPassword.of(username, password));
-//    Predicate<URI> uriPredicate = uri -> uri.getHost().contains(hostName);
-//    ((HasAuthentication) getDriver())
-//        .register(uriPredicate, UsernameAndPassword.of(username, password));
+    Predicate<URI> uriPredicate = uri -> uri.getHost().contains(hostName);
+    ((HasAuthentication) getDriver())
+        .register(uriPredicate, UsernameAndPassword.of(username, password));
   }
 
   /** Handle basic auth via chrome dev tools */
   public static void handleBasicAuthViaChromeDevTools(
       final String username, final String password) {
-    final DevTools devTools;
 
-    if (getDriver() instanceof ChromeDriver) {
-      devTools = ((ChromeDriver) getDriver()).getDevTools();
-    } else if (getDriver() instanceof EdgeDriver) {
-      devTools = ((EdgeDriver) getDriver()).getDevTools();
-    } else { // Driver Not Supported
-      Assert.fail("Driver is not Supported!\nDriver Class is: " + getDriver().getClass().getName());
-      return;
-    }
+    Augmenter augmenter = new Augmenter();
 
+    DevTools devTools = ((HasDevTools) augmenter.augment(getDriver())).getDevTools();
     devTools.createSession();
 
-    // Enable the Network domain of devtools
-    devTools.send(Network.enable(Optional.of(100000), Optional.of(100000), Optional.of(100000)));
-    final String auth = username + ":" + password;
+    WebDriver driver = augmenter.
+        addDriverAugmentation("chrome", HasAuthentication.class, (caps, exec) -> (whenThisMatches, useTheseCredentials) -> devTools.getDomains().network().addAuthHandler(whenThisMatches, useTheseCredentials)).augment(getDriver());
 
-    // Encoding the username and password using Base64 (java.util)
-    final String encodeToString = Base64.getEncoder().encodeToString(auth.getBytes());
+    ((HasAuthentication) driver).register(UsernameAndPassword.of(username, password));
 
-    // Pass the network header -> Authorization : Basic <encoded String>
-    Map<String, Object> headers = new HashMap<>();
-    headers.put("Authorization", "Basic " + encodeToString);
-    devTools.send(Network.setExtraHTTPHeaders(new Headers(headers)));
+//    if (getDriver() instanceof ChromeDriver) {
+//      devTools = ((ChromeDriver) getDriver()).getDevTools();
+//    } else if (getDriver() instanceof EdgeDriver) {
+//      devTools = ((EdgeDriver) getDriver()).getDevTools();
+//    } else { // Driver Not Supported
+//      Assert.fail("Driver is not Supported!\nDriver Class is: " + getDriver().getClass().getName());
+//      return;
+//    }
+//
+//    devTools.createSession();
+//
+//    // Enable the Network domain of devtools
+//    devTools.send(Network.enable(Optional.of(100000), Optional.of(100000), Optional.of(100000)));
+//    final String auth = username + ":" + password;
+//
+//    // Encoding the username and password using Base64 (java.util)
+//    final String encodeToString = Base64.getEncoder().encodeToString(auth.getBytes());
+//
+//    // Pass the network header -> Authorization : Basic <encoded String>
+//    Map<String, Object> headers = new HashMap<>();
+//    headers.put("Authorization", "Basic " + encodeToString);
+//    devTools.send(Network.setExtraHTTPHeaders(new Headers(headers)));
   }
 }

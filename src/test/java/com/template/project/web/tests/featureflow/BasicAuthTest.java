@@ -38,7 +38,7 @@ public class BasicAuthTest extends BaseTest {
     herokuappBasicAuthPage.verifyIfPageFooterIsPresent();
   }
 
-  @Test(groups = {NOT_FOR_REMOTE_EXECUTION})
+  @Test(groups = {AUTH})
   @Description(
       "This is to validate the authorization via encoded URL using chrome dev tool protocol")
   public void navigateToEncodedUrlViaDevToolsProtocol() {
@@ -51,7 +51,7 @@ public class BasicAuthTest extends BaseTest {
     herokuappBasicAuthPage.verifyIfPageFooterIsPresent();
   }
 
-  @Test(groups = {AUTH})
+  @Test(groups = {NOT_FOR_REMOTE_EXECUTION})
   @Description("This is to validate the authorization via Bi-Directional protocol")
   public void basicAuthUsingBiDiApi() {
     handleBasicAuthViaBiDiApi(
