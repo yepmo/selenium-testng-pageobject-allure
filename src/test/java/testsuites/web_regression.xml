@@ -23,11 +23,11 @@
   <test name="Chrome Tests">
     <parameter name="browserName" value="chrome"/>
 
-    <groups>
-      <run>
-        <exclude name="not_for_remote_execution" />
-      </run>
-    </groups>
+<!--    <groups>-->
+<!--      <run>-->
+<!--        <exclude name="not_for_remote_execution" />-->
+<!--      </run>-->
+<!--    </groups>-->
 
     <classes>
       <class name="com.template.project.web.tests.featureflow.BasicAuthTest"/>

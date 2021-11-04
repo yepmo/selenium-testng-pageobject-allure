@@ -845,9 +845,14 @@ public class SeleniumUtils {
   }
 
   public static void handleBasicAuthViaBiDiApi( final String hostName, final String username, final String password) {
+    Augmenter augmenter = new Augmenter();
+    DevTools devTools = ((HasDevTools) augmenter.augment(getDriver())).getDevTools();
+    devTools.createSession();
+    WebDriver driver = augmenter.
+        addDriverAugmentation("chrome", HasAuthentication.class, (caps, exec) -> (whenThisMatches, useTheseCredentials) -> devTools.getDomains().network().addAuthHandler(whenThisMatches, useTheseCredentials)).augment(getDriver());
 
     Predicate<URI> uriPredicate = uri -> uri.getHost().contains(hostName);
-    ((HasAuthentication) getDriver())
+    ((HasAuthentication) driver)
         .register(uriPredicate, UsernameAndPassword.of(username, password));
   }
 
@@ -856,13 +861,10 @@ public class SeleniumUtils {
       final String username, final String password) {
 
     Augmenter augmenter = new Augmenter();
-
     DevTools devTools = ((HasDevTools) augmenter.augment(getDriver())).getDevTools();
     devTools.createSession();
-
     WebDriver driver = augmenter.
         addDriverAugmentation("chrome", HasAuthentication.class, (caps, exec) -> (whenThisMatches, useTheseCredentials) -> devTools.getDomains().network().addAuthHandler(whenThisMatches, useTheseCredentials)).augment(getDriver());
-
     ((HasAuthentication) driver).register(UsernameAndPassword.of(username, password));
 
 //    if (getDriver() instanceof ChromeDriver) {
