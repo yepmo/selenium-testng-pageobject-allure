@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -30,14 +31,18 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.v95.network.Network;
 import org.openqa.selenium.devtools.v95.network.model.Headers;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.LocalFileDetector;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -839,11 +844,22 @@ public class SeleniumUtils {
     actions.doubleClick(tryFindElement(locator)).perform();
   }
 
-  public static void handleBasicAuthViaBiDiApi(
-      final String hostName, final String username, final String password) {
-    Predicate<URI> uriPredicate = uri -> uri.getHost().contains(hostName);
-    ((HasAuthentication) getDriver())
-        .register(uriPredicate, UsernameAndPassword.of(username, password));
+  public static void handleBasicAuthViaBiDiApi( final String username, final String password) {
+    DevTools devTools = ((HasDevTools) getDriver()).getDevTools();
+    devTools.createSession();
+    Augmenter augmenter = new Augmenter();
+
+    ((HasAuthentication) augmenter
+        .addDriverAugmentation("chrome",
+            HasAuthentication.class,
+            (caps, exec) -> (whenThisMatches, useTheseCredentials) ->
+                devTools.getDomains()
+                    .network()
+                    .addAuthHandler(whenThisMatches, useTheseCredentials))
+        .augment(getDriver())).register(UsernameAndPassword.of(username, password));
+//    Predicate<URI> uriPredicate = uri -> uri.getHost().contains(hostName);
+//    ((HasAuthentication) getDriver())
+//        .register(uriPredicate, UsernameAndPassword.of(username, password));
   }
 
   /** Handle basic auth via chrome dev tools */
