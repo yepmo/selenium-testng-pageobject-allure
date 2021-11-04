@@ -25,7 +25,7 @@
 
     <groups>
       <run>
-        <exclude name="com.client.project.common.Groups.NOT_FOR_REMOTE_EXECUTION"/>
+        <exclude name="not_for_remote_execution" />
       </run>
     </groups>
 
