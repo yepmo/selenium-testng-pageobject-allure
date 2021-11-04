@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration staus="WARN">
-  <properties>
-    <property name="pattern">[%d{HH:mm:ss}] %-5p (%F:%L) - %m%n</property>
-  </properties>
-  <appenders>
-    <Console name="ConsoleAppender" target="SYSTEM_OUT">
-      <PatternLayout
-              pattern="%d [%t] %-5level %logger{36} - %msg%n%throwable"/>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="ConsoleAppender">
+      <PatternLayout pattern="%d [%t] %-5level : %logger{36} - %msg%n%throwable"/>
     </Console>
-  </appenders>
-</configuration>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
+      <AppenderRef ref="ConsoleAppender"/>
+    </Root>
+  </Loggers>
+</Configuration>
