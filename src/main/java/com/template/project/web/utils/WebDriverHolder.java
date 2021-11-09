@@ -6,7 +6,11 @@ import static com.template.project.web.utils.BrowserFactory.getBrowser;
 import java.net.MalformedURLException;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.remote.Augmenter;
 
 @Slf4j
 public class WebDriverHolder {
@@ -25,6 +29,17 @@ public class WebDriverHolder {
 
   public static WebDriver getDriver() {
     return driver.get();
+  }
+
+  public static WebDriver getAugmentedDriver() {
+    Augmenter augmenter = new Augmenter();
+    DevTools devTools = ((HasDevTools) augmenter.augment(getDriver())).getDevTools();
+    devTools.createSession();
+    return augmenter.
+        addDriverAugmentation("chrome", HasAuthentication.class,
+            (caps, exec) -> (whenThisMatches, useTheseCredentials) -> devTools.getDomains()
+                .network().addAuthHandler(whenThisMatches, useTheseCredentials))
+        .augment(getDriver());
   }
 
   public static void tearDownBrowser() {

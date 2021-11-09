@@ -5,6 +5,7 @@ import static com.template.project.common.Logger.logInfo;
 import static com.template.project.web.utils.Waiters.getFluentWait;
 import static com.template.project.web.utils.Waiters.waitUntilElementClickable;
 import static com.template.project.web.utils.Waiters.waitUntilValueWillBePresentInElement;
+import static com.template.project.web.utils.WebDriverHolder.getAugmentedDriver;
 import static com.template.project.web.utils.WebDriverHolder.getDriver;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -33,20 +33,16 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.v95.network.Network;
 import org.openqa.selenium.devtools.v95.network.model.Headers;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.LocalFileDetector;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 
 /** Tools for testing web elements. */
 @Slf4j
@@ -844,50 +840,34 @@ public class SeleniumUtils {
     actions.doubleClick(tryFindElement(locator)).perform();
   }
 
-  public static void handleBasicAuthViaBiDiApi( final String hostName, final String username, final String password) {
-    Augmenter augmenter = new Augmenter();
-    DevTools devTools = ((HasDevTools) augmenter.augment(getDriver())).getDevTools();
-    devTools.createSession();
-    WebDriver driver = augmenter.
-        addDriverAugmentation("chrome", HasAuthentication.class, (caps, exec) -> (whenThisMatches, useTheseCredentials) -> devTools.getDomains().network().addAuthHandler(whenThisMatches, useTheseCredentials)).augment(getDriver());
-
+  /** Handle basic auth via bi-directional api
+   * @param hostName as String
+   * @param username as String
+   * @param password as String
+   */
+  public static void handleBasicAuthViaBiDiApi(
+      final String hostName, final String username, final String password) {
+    WebDriver driver = getAugmentedDriver();
     Predicate<URI> uriPredicate = uri -> uri.getHost().contains(hostName);
     ((HasAuthentication) driver)
         .register(uriPredicate, UsernameAndPassword.of(username, password));
   }
 
-  /** Handle basic auth via chrome dev tools */
+  /**
+   * Handle basic auth via chrome dev tools
+   * @param username as String
+   * @param password as String
+   */
   public static void handleBasicAuthViaChromeDevTools(
       final String username, final String password) {
-
     Augmenter augmenter = new Augmenter();
     DevTools devTools = ((HasDevTools) augmenter.augment(getDriver())).getDevTools();
     devTools.createSession();
-    WebDriver driver = augmenter.
-        addDriverAugmentation("chrome", HasAuthentication.class, (caps, exec) -> (whenThisMatches, useTheseCredentials) -> devTools.getDomains().network().addAuthHandler(whenThisMatches, useTheseCredentials)).augment(getDriver());
-    ((HasAuthentication) driver).register(UsernameAndPassword.of(username, password));
-
-//    if (getDriver() instanceof ChromeDriver) {
-//      devTools = ((ChromeDriver) getDriver()).getDevTools();
-//    } else if (getDriver() instanceof EdgeDriver) {
-//      devTools = ((EdgeDriver) getDriver()).getDevTools();
-//    } else { // Driver Not Supported
-//      Assert.fail("Driver is not Supported!\nDriver Class is: " + getDriver().getClass().getName());
-//      return;
-//    }
-//
-//    devTools.createSession();
-//
-//    // Enable the Network domain of devtools
-//    devTools.send(Network.enable(Optional.of(100000), Optional.of(100000), Optional.of(100000)));
-//    final String auth = username + ":" + password;
-//
-//    // Encoding the username and password using Base64 (java.util)
-//    final String encodeToString = Base64.getEncoder().encodeToString(auth.getBytes());
-//
-//    // Pass the network header -> Authorization : Basic <encoded String>
-//    Map<String, Object> headers = new HashMap<>();
-//    headers.put("Authorization", "Basic " + encodeToString);
-//    devTools.send(Network.setExtraHTTPHeaders(new Headers(headers)));
+    devTools.send(Network.enable(Optional.of(100000), Optional.of(100000), Optional.of(100000)));
+    final String auth = username + ":" + password;
+    String encodeToString = Base64.getEncoder().encodeToString(auth.getBytes());
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("Authorization", "Basic " + encodeToString);
+    devTools.send(Network.setExtraHTTPHeaders(new Headers(headers)));
   }
 }
