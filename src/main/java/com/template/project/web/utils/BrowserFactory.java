@@ -66,7 +66,7 @@ public class BrowserFactory {
   /** This method is to setup webDriverManager for different browser */
   private static void setupWebDriverManager() {
     WebDriverManager.chromedriver().setup();
-    WebDriverManager.firefoxdriver().setup();
+    WebDriverManager.firefoxdriver().driverVersion("0.30.0").setup();
     WebDriverManager.iedriver().setup();
     WebDriverManager.edgedriver().setup();
   }
@@ -123,7 +123,6 @@ public class BrowserFactory {
     FirefoxOptions options = new FirefoxOptions();
     options.setCapability("name", testName);
     options.setCapability("moz:firefoxOptions", options);
-    System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
     System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
 
     if (isRemote()) {
